@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Float My Boat</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body>
+	
+	<h1>Battleship</h1>	
+
+	<p>Why You Trying To Knock My Battleship Hustle?</p>
+
+	<div id="gameboard">
+	</div>
+	
+	<script type="text/javascript" src="battleship.js"></script>
+	</body>
+</html>
+<script>
+    // set grid rows and columns and the size of each square
+    var rows = 10;
+    var cols = 10;
+    var squareSize = 50;
+
+    // get the container element
+    var gameBoardContainer = document.getElementById("gameboard");
+
+    // make the grid columns and rows
+    for (i = 0; i < cols; i++) {
+        for (j = 0; j < rows; j++) {
+            
+            // create a new div HTML element for each grid square and make it the right size
+            var square = document.createElement("div");
+            gameBoardContainer.appendChild(square);
+
+        // give each div element a unique id based on its row and column, like "s00"
+            square.id = 's' + j + i;			
+            
+            // set each grid square's coordinates: multiples of the current row or column number
+            var topPosition = j * squareSize;
+            var leftPosition = i * squareSize;			
+            
+            // use CSS absolute positioning to place each grid square on the page
+            square.style.top = topPosition + 'px';
+            square.style.left = leftPosition + 'px';						
+        }
+    }
+
+    /* 
+        Carrier     - 5 hits
+        Battleship  - 4 hits
+        Destroyer   - 3 hits
+        Submarine   - 3 hits
+        Patrol Boat - 2 hits
+    */
+    var hitCount = 0;
+
+    /* create the 2d array that will contain the status of each square on the board
+    and place ships on the board (later, create function for random placement!)
+    0 = empty, 1 = part of a ship, 2 = a sunken part of a ship, 3 = a missed shot
+    */
+    var gameBoard = [
+                    [0,0,0,1,1,1,1,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,1,0,0,0],
+                    [0,0,0,0,0,0,1,0,0,0],
+                    [1,0,0,0,0,0,1,1,1,1],
+                    [1,0,0,0,0,0,0,0,0,0],
+                    [1,0,0,1,0,0,0,0,0,0],
+                    [1,0,0,1,0,0,0,0,0,0],
+                    [1,0,0,0,0,0,0,0,0,0]
+                    ]
+
+    gameBoardContainer.addEventListener("click", blowShitUp, false);
+
+
+    function blowShitUp(e) {
+        if (e.target !== e.currentTarget) {
+            // extract row and column # from the HTML element's id
+            var row = e.target.id.substring(1,2);
+            var col = e.target.id.substring(2,3);
+            //alert("Clicked on row " + row + ", col " + col);
+                    
+            // if player clicks a square with no ship, change the color and change square's value
+            if (gameBoard[row][col] == 0) {
+                e.target.style.background = '#bbb';
+                // set this square's value to 3 to indicate that they fired and missed
+                gameBoard[row][col] = 3;
+                
+            // if player clicks a square with a ship, change the color and change square's value
+            } else if (gameBoard[row][col] == 1) {
+           +     e.target.style.background = 'red';
+                // set this square's value to 2 to indicate the ship has been hit
+                gameBoard[row][col] = 2;
+                hitCount++;
+                if (hitCount == 17) {
+                    alert("All enemy battleships have been defeated! You win!");
+                }
+            
+            } else if (gameBoard[row][col] > 1) {
+                alert("Dude...You Sure You Really Want Smoke?");
+            }		
+        }
+        e.stopPropagation();
+}
+</script>
